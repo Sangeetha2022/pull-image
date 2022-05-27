@@ -1,0 +1,79 @@
+Pull image from private registry
+==========================
+minikube start
+minikube start --driver=docker
+kubectl get secrets
+kubectl get po
+
+docker login
+login problem
+so
+systemctl daemon-reload
+systemctl restart docker
+vim /etc/resolv.conf
+systemctl status docker
+
+docker login
+cat ~/.docker/config.json
+cat ~/.docker/config.json | base64 -w0
+c2FuZ2VldGhhZ29waW5hdGg6c2hyaXByYW5hdjEyMDg=
+ewoJImF1dGhzIjogewoJCSJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOiB7CgkJCSJhdXRoIjogImMyRnVaMlZsZEdoaFoyOXdhVzVoZEdnNmMyaHlhWEJ5WVc1aGRqRXlNRGc9IgoJCX0KCX0KfQ==
+vim mysecret.yaml
+---------------------------
+apiVersion: v1
+kind: Secret
+metadata:
+  name: regcred
+data:
+  .dockerconfigjson: ewoJImF1dGhzIjogewoJCSJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOiB7CgkJCSJhdXRoIjogImMyRnVaMlZsZEdoaFoyOXdhVzVoZEdnNmMyaHlhWEJ5WVc1aGRqRXlNRGc9IgoJCX0KCX0KfQ==
+type: kubernetes.io/dockerconfigjson
+---------------------------------------------                                          
+kubectl get secret regcred --output=yaml
+
+kubectl create secret docker-registry regcred --docker-server=https://index.docker.io/v1/sangeethagopinath/private-repo --docker-username=sangeethagopinath --docker-password=shripranav1208
+
+vim private-pod.yaml
+--------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: private-pod
+spec:
+  containers:
+  - name: private-reg
+    image: sangeethagopinath/private-repo:latest
+  imagePullSecrets:
+  - name: regcred
+
+kubectl get secrets
+
+kubectl apply -f private-pod.yaml
+kubectl get pods
+kubectl get pod private-pod
+kubectl describe pod private-pod
+kubectl delete pod private-pod
+kubectl apply -f private-pod.yaml
+kubectl get pod private-pod
+kubectl describe pod private-pod
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
